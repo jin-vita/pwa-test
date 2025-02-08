@@ -9,55 +9,37 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      registerType: 'autoUpdate', // 자동 업데이트
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        "name": "pwa_test",
-        "short_name": "pwa_test",
-        "icons": [
+        name: 'pwa-test',
+        short_name: 'pwa-test',
+        description: 'A Vue.js PWA using Vite',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
+        display: 'standalone',
+        scope: '/',
+        start_url: '/',
+        icons: [
           {
-            "src": "/icons/android-chrome-192x192.png",
-            "sizes": "192x192",
-            "type": "image/png",
-            "purpose": "any"
+            src: 'icon/paper-128.png',
+            sizes: '128x128',
+            type: 'image/png'
           },
           {
-            "src": "/icons/android-chrome-512x512.png",
-            "sizes": "512x512",
-            "type": "image/png",
-            "purpose": "maskable"
-          },
-        ],
-        "start_url": "/",
-        "display": "standalone",
-        "background_color": "#ffffff",
-        "theme_color": "#ffffff"
+            src: '/icon/paper-512.png',
+            sizes: '512x512',
+            type: 'image/png'
+          }
+        ]
       },
       workbox: {
-        runtimeCaching: [{
-          urlPattern: /\.ico$/,
-          handler: 'CacheFirst',
-          options: {
-            cacheName: 'ico-cache',
-            expiration: {
-              maxEntries: 10,
-              maxAgeSeconds: 60 * 60 * 24 * 365,
-            }
-          }
-        },
-          {
-            urlPattern: /\.json$/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'json-cache',
-              cacheableResponse: {
-                statuses: [200]
-              }
-            },
-          }
-        ],
+        globPatterns: ['**/*.{js,css,html,png,svg,ico}']
+      },
+      devOptions: {
+        enabled: true
       }
-    })
+    }),
   ],
   resolve: {
     alias: {
