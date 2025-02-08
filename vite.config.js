@@ -2,11 +2,62 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { VitePWA } from "vite-plugin-pwa";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      manifest: {
+        "name": "pwa_test",
+        "short_name": "pwa_test",
+        "icons": [
+          {
+            "src": "/icons/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+          },
+          {
+            "src": "/icons/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+          },
+        ],
+        "start_url": "/",
+        "display": "standalone",
+        "background_color": "#ffffff",
+        "theme_color": "#ffffff"
+      },
+      workbox: {
+        runtimeCaching: [{
+          urlPattern: /\.ico$/,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'ico-cache',
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 60 * 60 * 24 * 365,
+            }
+          }
+        },
+          {
+            urlPattern: /\.json$/,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'json-cache',
+              cacheableResponse: {
+                statuses: [200]
+              }
+            },
+          }
+        ],
+      }
+    })
   ],
   resolve: {
     alias: {
